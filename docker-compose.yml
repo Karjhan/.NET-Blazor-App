@@ -1,0 +1,78 @@
+services:
+  # IdentityServer-API
+  identity-api-svc:
+    image: 'blazor-identity-provider-api:localhost'
+    build: 
+      context: ./BlazorCleanArchitectureTest
+      dockerfile: IdentityProvider-API/Dockerfile
+    depends_on:
+      - postgres
+      - seq
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - EFConfiguration__ConnectionString=${POSTGRES_CONNECTION_STRING_USERS}
+      - Serilog__WriteTo__0__Args__serverUrl=${SEQ_SERVER_URL}
+      - Kestrel__Certificates__Default__Password=password
+      - Kestrel__Certificates__Default__Path=/app/Certificate/localhost.pfx
+      - EnforceHttpsRedirection=true
+      - DockerizedUrl=
+    ports:
+      - 9080:9080
+      - 9443:9443
+    volumes:
+      - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
+      - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https
+    networks:
+      - backend
+
+  # Postgres
+  postgres:
+    container_name: blazor-container-pg
+    image: postgres
+    hostname: localhost
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - app-postgres-data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    networks:
+      - backend
+
+  # PgAdmin Web UI
+  pgadmin:
+    container_name: blazor-container-pgadmin
+    image: dpage/pgadmin4
+    depends_on:
+      - postgres
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    restart: unless-stopped
+    networks:
+      - backend
+
+  # Datalust Seq
+  seq:
+    container_name: blazor-container-seq
+    image: datalust/seq:latest
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - "5341:5341"
+      - "8081:80"
+    networks:
+      - backend
+
+networks:
+  backend:
+    name: backend
+    driver: bridge
+
+volumes:
+  app-postgres-data:
