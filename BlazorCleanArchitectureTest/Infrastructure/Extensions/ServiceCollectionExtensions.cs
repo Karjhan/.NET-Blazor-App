@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
 
 namespace Infrastructure.Extensions;
 
@@ -70,45 +71,41 @@ public static class ServiceCollectionExtensions
         });
         
         // Add OpenID Connect authentication (ex: Duende Identity Server)
-        services.AddAuthentication(options =>
+        if (!string.IsNullOrEmpty(jwtConfiguration.DefaultThirdPartyUrl))
         {
-            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            services.AddAuthentication()
+                .AddOpenIdConnect("oidc", options =>
+                {
+                    options.Authority = jwtConfiguration.DefaultThirdPartyUrl;
+                    options.ClientId = "your-client-id";
+                    options.ClientSecret = "your-client-secret";
+                    options.ResponseType = "code";
+
+                    options.Scope.Add("openid");
+                    options.Scope.Add("profile");
+                    options.Scope.Add("api");
+
+                    options.SaveTokens = true;
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = "https://your-duende-identity-server",
+                        ValidateAudience = true,
+                        ValidAudience = "your-audience",
+                        ValidateLifetime = true
+                    };
+                });
+        }
+        
+        // Add authorization
+        services.AddAuthorization(options =>
         {
-            options.TokenValidationParameters = new TokenValidationParameters
+            options.AddPolicy("CombinedPolicy", policy =>
             {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateIssuerSigningKey = true,
-                ValidateLifetime = true,
-                ValidIssuer = jwtConfiguration!.Issuer,
-                ValidAudience = jwtConfiguration.Audience,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfiguration.Key))
-            };
-            options.RequireHttpsMetadata = true;
-        })
-        .AddOpenIdConnect("oidc", options =>
-        {
-            options.Authority = "https://your-duende-identity-server";
-            options.ClientId = "your-client-id";
-            options.ClientSecret = "your-client-secret";
-            options.ResponseType = "code";
-
-            options.Scope.Add("openid");
-            options.Scope.Add("profile");
-            options.Scope.Add("api");
-
-            options.SaveTokens = true;
-
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidIssuer = "https://your-duende-identity-server",
-                ValidateAudience = true,
-                ValidAudience = "your-audience",
-                ValidateLifetime = true
-            };
+                policy.RequireAuthenticatedUser();
+                policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme, "oidc");
+            });
         });
         
         // Add CORS

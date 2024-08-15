@@ -7,4 +7,6 @@ public class JWTConfiguration
     public string Issuer { get; init; } = null!;
     
     public string Audience { get; init; } = null!;
+    
+    public string? DefaultThirdPartyUrl { get; init; }
 }
