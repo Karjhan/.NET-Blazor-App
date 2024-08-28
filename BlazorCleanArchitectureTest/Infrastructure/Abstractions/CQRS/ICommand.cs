@@ -1,4 +1,4 @@
-﻿using Infrastructure.Primitives;
+﻿using Domain.Primitives;
 using MediatR;
 
 namespace Infrastructure.Abstractions.CQRS;

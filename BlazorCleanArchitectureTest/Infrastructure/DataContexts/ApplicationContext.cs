@@ -8,6 +8,8 @@ namespace Infrastructure.DataContexts;
 
 public class ApplicationContext : IdentityDbContext<ApplicationUser>, IUnitOfWork
 {
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
+    
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
         

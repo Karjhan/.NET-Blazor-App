@@ -1,8 +1,8 @@
-﻿namespace Infrastructure.Primitives;
+﻿namespace Domain.Primitives;
 
 public abstract class Entity(Guid id) : IEquatable<Entity>
 {
-    private Guid Id { get; } = id;
+    public Guid Id { get; } = id;
 
     public static bool operator ==(Entity? first, Entity? second)
     {

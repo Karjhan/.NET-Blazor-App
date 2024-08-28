@@ -1,6 +1,6 @@
-﻿using Infrastructure.Exceptions;
+﻿using Domain.Exceptions;
 
-namespace Infrastructure.Primitives;
+namespace Domain.Primitives;
 
 public class Result
 {

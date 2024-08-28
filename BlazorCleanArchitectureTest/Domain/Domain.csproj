@@ -10,8 +10,4 @@
       <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.6" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Abstractions\" />
-    </ItemGroup>
-
 </Project>

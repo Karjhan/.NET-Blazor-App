@@ -26,8 +26,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Configurations\EntitiesConfiguration\" />
-      <Folder Include="Constants\" />
       <Folder Include="Migrations\" />
     </ItemGroup>
 

@@ -1,5 +1,5 @@
-﻿using Infrastructure.Abstractions.CQRS;
-using Infrastructure.Primitives;
+﻿using Domain.Primitives;
+using Infrastructure.Abstractions.CQRS;
 
 namespace Application.Accounts.Commands.UpdateRole;
 
