@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Application.Accounts.Queries.LoginAccount;
 
 namespace API.Accounts.DTOs;
 
@@ -12,4 +13,14 @@ public class LoginAccountRequest
     [Required]
     [RegularExpression("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$", ErrorMessage = "Your password must be a mix of Alphanumeric and special characters")]
     public string Password { get; set; } = string.Empty;
+    
+    public LoginAccountQuery ToLoginAccountQuery()
+    {
+        LoginAccountQuery loginAccountQuery = new LoginAccountQuery(
+            EmailAddress, 
+            Password
+        );
+
+        return loginAccountQuery;
+    }
 }

@@ -1,4 +1,6 @@
-﻿namespace API.Extensions;
+﻿using Carter;
+
+namespace API.Extensions;
 
 public static class SwaggerServicesExtensions
 {
@@ -15,5 +17,13 @@ public static class SwaggerServicesExtensions
         app.UseSwagger();
         app.UseSwaggerUI();
         return app;
+    }
+    
+    public static IServiceCollection AddPresentationServices(this IServiceCollection services)
+    {
+        // Add Carter
+        services.AddCarter();
+        
+        return services;
     }
 }

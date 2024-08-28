@@ -1,6 +1,10 @@
 using API.Extensions;
 using API.Middlewares;
+using Application;
+using Application.Extensions;
+using Carter;
 using Infrastructure.Extensions;
+using MediatR.NotificationPublishers;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,11 +15,10 @@ builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Confi
 // Add services to the container.
 builder.Services.AddSwaggerDocumentation();
 builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddApplicationServices();
+builder.Services.AddPresentationServices();
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerDocumentation();
 
 builder.Services.AddControllers();
 
@@ -26,14 +29,14 @@ if (app.Configuration.GetValue("EnforceHttpsRedirection", true))
     app.UseHttpsRedirection();
 }
 
-app.UseInfrastructureSwagger();
-
 app.UseMiddleware<RequestLogContextMiddleware>();
 
 app.UseSerilogRequestLogging();
 
-app.MapControllers();
-
 app.MapApplicationHealthChecks();
+
+app.UseInfrastructureSwagger();
+
+app.MapCarter();
 
 app.Run();

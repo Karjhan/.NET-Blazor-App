@@ -40,8 +40,10 @@ public class AccountUtilities
                 expires: DateTime.Now.AddMinutes(60),
                 signingCredentials: credentials
             );
+            
+            var result = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return result;
         }
         catch (Exception e)
         {

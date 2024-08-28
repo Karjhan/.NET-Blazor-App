@@ -9,6 +9,7 @@ public sealed record Error(string Code, string Description)
     public static readonly Error AlreadyExistingUser = new("Error.AlreadyExistingUser", "Sorry, the user is already created!");
     public static readonly Error UserNotFound = new("Error.UserNotFound", "User not found!");
     public static readonly Error InvalidCredentials = new("Error.InvalidCredentials", "Invalid Credentials");
+    public static readonly Error RoleNotFound = new("Error.RoleNotFound", "Role not found!");
 
     public static readonly Error AccountLoggingError = new("Error.AccountLoggingError",
         "Error occured while logging in account, please contact administrator!");
