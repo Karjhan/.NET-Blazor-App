@@ -1,15 +1,12 @@
 ﻿using System.Security.Claims;
 using Application.Adapters;
 using Application.Responses.Credentials;
-using Domain.Primitives;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.Extensions.Logging;
 
 namespace Application.Utilities;
 
 public class CustomAuthenticationStateProvider(
-    ILocalStorageAdapter localStorageAdapter,
-    ILogger<CustomAuthenticationStateProvider> logger
+    ILocalStorageAdapter localStorageAdapter
 ) : AuthenticationStateProvider
 {
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()

@@ -15,7 +15,7 @@ builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Confi
 // Add services to the container.
 builder.Services.AddSwaggerDocumentation();
 builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddPresentationServices();
 
 builder.Services.AddSwaggerDocumentation();
