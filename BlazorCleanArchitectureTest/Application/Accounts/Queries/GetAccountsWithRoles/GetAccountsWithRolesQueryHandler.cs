@@ -1,4 +1,4 @@
-﻿using Application.Accounts.DTOs;
+﻿using Application.Responses.Accounts;
 using Domain.Models.Authentication;
 using Domain.Primitives;
 using Infrastructure.Abstractions.CQRS;

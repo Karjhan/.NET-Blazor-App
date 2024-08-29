@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Application.Accounts.Queries.LoginAccount;
 
-namespace API.Accounts.DTOs;
+namespace Application.Requests.Accounts;
 
 public class LoginAccountRequest
 {

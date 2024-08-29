@@ -1,6 +1,6 @@
 ﻿using Application.Accounts.Commands.UpdateRole;
 
-namespace API.Accounts.DTOs;
+namespace Application.Requests.Accounts;
 
 public class UpdateRoleRequest
 {

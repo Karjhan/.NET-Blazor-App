@@ -1,4 +1,4 @@
-﻿using Application.Accounts.DTOs;
+﻿using Application.Responses.Accounts;
 using Application.Utilities;
 using Domain.Exceptions;
 using Domain.Models.Authentication;

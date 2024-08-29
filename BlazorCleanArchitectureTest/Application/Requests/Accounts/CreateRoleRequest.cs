@@ -1,6 +1,6 @@
 ﻿using Application.Accounts.Commands.CreateRole;
 
-namespace API.Accounts.DTOs;
+namespace Application.Requests.Accounts;
 
 public class CreateRoleRequest
 {

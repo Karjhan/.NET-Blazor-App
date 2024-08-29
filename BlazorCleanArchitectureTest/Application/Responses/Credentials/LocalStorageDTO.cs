@@ -1,4 +1,4 @@
-﻿namespace API.Accounts.Credentials;
+﻿namespace Application.Responses.Credentials;
 
 public class LocalStorageDTO
 {

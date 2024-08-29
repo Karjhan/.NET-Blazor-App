@@ -1,8 +1,8 @@
-﻿using API.Accounts.DTOs;
-using Application.Accounts.Commands.CreateAccount;
+﻿using Application.Accounts.Commands.CreateAccount;
 using Application.Accounts.Commands.CreateRole;
 using Application.Accounts.Commands.UpdateRole;
 using Application.Accounts.Queries.LoginAccount;
+using Application.Requests.Accounts;
 using AutoMapper;
 
 namespace API.Profiles;

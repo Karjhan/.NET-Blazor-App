@@ -1,4 +1,4 @@
-﻿namespace Application.Accounts.DTOs;
+﻿namespace Application.Responses.Accounts;
 
 public record LoginResponse(
     string Token,

@@ -1,4 +1,4 @@
-﻿using Application.Accounts.DTOs;
+﻿using Application.Responses.Accounts;
 using Infrastructure.Abstractions.CQRS;
 
 namespace Application.Accounts.Queries.LoginAccount;

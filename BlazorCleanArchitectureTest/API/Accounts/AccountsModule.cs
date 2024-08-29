@@ -1,12 +1,14 @@
-﻿using API.Accounts.DTOs;
-using Application.Accounts.Commands.CreateAccount;
+﻿using Application.Accounts.Commands.CreateAccount;
 using Application.Accounts.Commands.CreateAdmin;
 using Application.Accounts.Commands.CreateRole;
 using Application.Accounts.Commands.UpdateRole;
 using Application.Accounts.Queries.GetAccountsWithRoles;
 using Application.Accounts.Queries.GetRoles;
 using Application.Accounts.Queries.LoginAccount;
+using Application.Accounts.Queries.RefreshToken;
+using Application.Requests.Accounts;
 using Carter;
+using Infrastructure.Constants;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,14 +16,14 @@ namespace API.Accounts;
 
 public class AccountsModule : CarterModule
 {
-    public AccountsModule() : base("api/accounts")
+    public AccountsModule() : base(ApplicationConstants.ApiAccountBasePath)
     {
         
     }
     
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("/identity/create", async ([FromBody] CreateAccountRequest request, ISender sender) =>
+        app.MapPost(ApplicationConstants.ApiCreateAccountSubPath, async ([FromBody] CreateAccountRequest request, ISender sender) =>
         {
             CreateAccountCommand command = request.ToCreateAccountCommand();
 
@@ -30,7 +32,7 @@ public class AccountsModule : CarterModule
             return result.IsSuccess ? Results.Ok() : Results.BadRequest(result.Error);
         }).WithTags("accounts");
         
-        app.MapPost("/identity/login", async ([FromBody] LoginAccountRequest request, ISender sender, CancellationToken cancellationToken) =>
+        app.MapPost(ApplicationConstants.ApiLoginAccountSubPath, async ([FromBody] LoginAccountRequest request, ISender sender, CancellationToken cancellationToken) =>
         {
             LoginAccountQuery query = request.ToLoginAccountQuery();
 
@@ -39,7 +41,16 @@ public class AccountsModule : CarterModule
             return response.IsSuccess ? Results.Ok(response.Value) : Results.BadRequest(response.Error);
         }).WithTags("accounts");
         
-        app.MapPost("/identity/role/create", async ([FromBody] CreateRoleRequest request, ISender sender) =>
+        app.MapPost(ApplicationConstants.ApiRefreshTokenSubPath, async ([FromBody] RefreshTokenRequest request, ISender sender, CancellationToken cancellationToken) =>
+        {
+            RefreshTokenQuery query = request.ToRefreshTokenQuery();
+
+            var response = await sender.Send(query, cancellationToken);
+            
+            return response.IsSuccess ? Results.Ok(response.Value) : Results.BadRequest(response.Error);
+        }).WithTags("accounts");
+        
+        app.MapPost(ApplicationConstants.ApiCreateRoleSubPath, async ([FromBody] CreateRoleRequest request, ISender sender) =>
         {
             CreateRoleCommand command = request.ToCreateRoleCommand();
 
@@ -48,7 +59,7 @@ public class AccountsModule : CarterModule
             return result.IsSuccess ? Results.Ok() : Results.BadRequest(result.Error);
         }).WithTags("roles");
         
-        app.MapGet("/identity/role/list", async (ISender sender, CancellationToken cancellationToken) =>
+        app.MapGet(ApplicationConstants.ApiGetRolesSubPath, async (ISender sender, CancellationToken cancellationToken) =>
         {
             GetRolesQuery query = new GetRolesQuery();
 
@@ -57,7 +68,7 @@ public class AccountsModule : CarterModule
             return response.IsSuccess ? Results.Ok(response.Value) : Results.BadRequest(response.Error);
         }).WithTags("roles");
         
-        app.MapPost("/setting", async (ISender sender) =>
+        app.MapPost(ApplicationConstants.ApiCreateAdminSubPath, async (ISender sender) =>
         {
             CreateAdminCommand command = new CreateAdminCommand();
 
@@ -66,7 +77,7 @@ public class AccountsModule : CarterModule
             return result.IsSuccess ? Results.Ok() : Results.BadRequest(result.Error);
         }).WithTags("accounts");
         
-        app.MapPost("/identity/users-with-roles", async (ISender sender, CancellationToken cancellationToken) =>
+        app.MapPost(ApplicationConstants.ApiGetAccountsWithRolesSubPath, async (ISender sender, CancellationToken cancellationToken) =>
         {
             GetAccountsWithRolesQuery query = new GetAccountsWithRolesQuery();
 
@@ -75,7 +86,7 @@ public class AccountsModule : CarterModule
             return response.IsSuccess ? Results.Ok(response.Value) : Results.BadRequest(response.Error);
         }).WithTags("accounts");
         
-        app.MapGet("/identity/change-role", async ([FromBody] UpdateRoleRequest request, ISender sender) =>
+        app.MapGet(ApplicationConstants.ApiUpdateRoleSubPath, async ([FromBody] UpdateRoleRequest request, ISender sender) =>
         {
             UpdateRoleCommand command = request.ToUpdateRoleCommand();
 

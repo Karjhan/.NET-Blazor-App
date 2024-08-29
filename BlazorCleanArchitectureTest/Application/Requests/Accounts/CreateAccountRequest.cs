@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Application.Accounts.Commands.CreateAccount;
 
-namespace API.Accounts.DTOs;
+namespace Application.Requests.Accounts;
 
 public class CreateAccountRequest : LoginAccountRequest
 {

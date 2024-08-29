@@ -1,4 +1,4 @@
-﻿using Application.Accounts.DTOs;
+﻿using Application.Responses.Accounts;
 using Domain.Primitives;
 using Infrastructure.Abstractions.CQRS;
 using Microsoft.AspNetCore.Identity;
