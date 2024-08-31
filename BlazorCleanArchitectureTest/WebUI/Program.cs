@@ -1,6 +1,7 @@
 using Application.Extensions;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using NetcodeHub.Packages.Components.DataGrid;
 using NetcodeHub.Packages.Components.Toast;
 using WebUI;
 
@@ -11,5 +12,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddApplicationUIServices(builder.Configuration);
 builder.Services.AddScoped<ToastService>();
+builder.Services.AddVirtualizationService();
 
 await builder.Build().RunAsync();

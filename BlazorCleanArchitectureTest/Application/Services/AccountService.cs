@@ -33,7 +33,9 @@ public class AccountService(
                 return Result.Failure(Error.InternalServerError with { Description = error }); 
             }
             
-            var result = await response.Content.ReadFromJsonAsync<Result>(cancellationToken);
+            var stringResult = await response.Content.ReadAsStringAsync(cancellationToken);
+            
+            var result = string.IsNullOrEmpty(stringResult) ? Result.Success() : await response.Content.ReadFromJsonAsync<Result>(cancellationToken);
             logger.LogInformation("CreateAdminAsync completed successfully.");
             return result!;
         }
@@ -158,7 +160,9 @@ public class AccountService(
                 return Result.Failure(new Error("Error.CreateRole", error));
             }
 
-            var result = await response.Content.ReadFromJsonAsync<Result>(cancellationToken);
+            var stringResult = await response.Content.ReadAsStringAsync(cancellationToken);
+            
+            var result = string.IsNullOrEmpty(stringResult) ? Result.Success() : await response.Content.ReadFromJsonAsync<Result>(cancellationToken);
             logger.LogInformation("CreateRoleAsync completed successfully.");
             return result!;
         }
@@ -255,11 +259,13 @@ public class AccountService(
             var error = await CheckResponseStatus(response);
             if (!string.IsNullOrEmpty(error))
             {
-                logger.LogWarning("Failed to change role for {UserId}. {Error}", request.UserEmail, error);
+                // logger.LogWarning("Failed to change role for {UserId}. {Error}", request.UserEmail, error);
                 return Result.Failure(new Error("Error.UpdateRole", error));
             }
 
-            var result = await response.Content.ReadFromJsonAsync<Result>(cancellationToken);
+            var stringResult = await response.Content.ReadAsStringAsync(cancellationToken);
+            
+            var result = string.IsNullOrEmpty(stringResult) ? Result.Success() : await response.Content.ReadFromJsonAsync<Result>(cancellationToken);
             logger.LogInformation("ChangeUserRoleAsync completed successfully for {UserId}.", request.UserEmail);
             return result!;
         }

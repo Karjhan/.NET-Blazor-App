@@ -38,7 +38,7 @@
                                             string roleName = user.RoleName!;
                                             string selectedRole = "";
                                             <select class="form-select" @onchange="HandleSelectionChange">
-                                                <option selected="selected" value="@roleName">
+                                                <option selected="selected" value="@($"{roleName}_{user.Email}")">
                                                     @roleName
                                                 </option>
                                                 @foreach (var role in DefaultRoles)
