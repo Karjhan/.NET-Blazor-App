@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Components;
 namespace Application.Utilities;
 
 public class CustomHttpHandler(
-    LocalStorageAdapter localStorageAdapter,
+    ILocalStorageAdapter localStorageAdapter,
     NavigationManager navigationManager,
     IAccountService accountService
 ) : DelegatingHandler

@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalAuthServer", "Exter
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityProvider-API", "IdentityProvider-API\IdentityProvider-API.csproj", "{1EC2FBDC-FE1F-4161-BFE9-60D2D72B26D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Injection", "Application.Injection\Application.Injection.csproj", "{8EAF4FBB-8A18-42BB-B2D1-2CC7B0DD19D8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,10 +46,6 @@ Global
 		{1EC2FBDC-FE1F-4161-BFE9-60D2D72B26D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EC2FBDC-FE1F-4161-BFE9-60D2D72B26D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EC2FBDC-FE1F-4161-BFE9-60D2D72B26D4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8EAF4FBB-8A18-42BB-B2D1-2CC7B0DD19D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8EAF4FBB-8A18-42BB-B2D1-2CC7B0DD19D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8EAF4FBB-8A18-42BB-B2D1-2CC7B0DD19D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8EAF4FBB-8A18-42BB-B2D1-2CC7B0DD19D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{42B579AD-D596-44AF-9F3D-FD5830C609F2} = {DCE4464A-10AF-4EB0-BE9E-5D722C679F3E}

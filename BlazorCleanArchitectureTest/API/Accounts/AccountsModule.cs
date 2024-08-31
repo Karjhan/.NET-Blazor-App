@@ -77,7 +77,7 @@ public class AccountsModule : CarterModule
             return result.IsSuccess ? Results.Ok() : Results.BadRequest(result.Error);
         }).WithTags("accounts");
         
-        app.MapPost(ApplicationConstants.ApiGetAccountsWithRolesSubPath, async (ISender sender, CancellationToken cancellationToken) =>
+        app.MapGet(ApplicationConstants.ApiGetAccountsWithRolesSubPath, async (ISender sender, CancellationToken cancellationToken) =>
         {
             GetAccountsWithRolesQuery query = new GetAccountsWithRolesQuery();
 
@@ -86,7 +86,7 @@ public class AccountsModule : CarterModule
             return response.IsSuccess ? Results.Ok(response.Value) : Results.BadRequest(response.Error);
         }).WithTags("accounts");
         
-        app.MapGet(ApplicationConstants.ApiUpdateRoleSubPath, async ([FromBody] UpdateRoleRequest request, ISender sender) =>
+        app.MapPost(ApplicationConstants.ApiUpdateRoleSubPath, async ([FromBody] UpdateRoleRequest request, ISender sender) =>
         {
             UpdateRoleCommand command = request.ToUpdateRoleCommand();
 

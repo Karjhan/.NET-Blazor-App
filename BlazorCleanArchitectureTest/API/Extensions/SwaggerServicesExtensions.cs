@@ -16,14 +16,9 @@ public static class SwaggerServicesExtensions
     {
         app.UseSwagger();
         app.UseSwaggerUI();
-        return app;
-    }
-    
-    public static IServiceCollection AddPresentationServices(this IServiceCollection services)
-    {
-        // Add Carter
-        services.AddCarter();
         
-        return services;
+        app.UseCors("DefaultCorsPolicy");
+        
+        return app;
     }
 }

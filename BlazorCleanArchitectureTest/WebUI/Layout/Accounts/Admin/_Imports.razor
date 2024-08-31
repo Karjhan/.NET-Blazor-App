@@ -1,0 +1,14 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using Infrastructure.Constants
+@attribute [Authorize(Roles = RoleConstants.Admin)]
+@layout MainLayout
+@inject IAccountService accountService
+@using System.Security.Claims
+@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.JSInterop

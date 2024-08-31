@@ -1,5 +1,6 @@
 ﻿@using System.Net.Http
 @using System.Net.Http.Json
+@using Application.Services
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
@@ -8,3 +9,13 @@
 @using Microsoft.JSInterop
 @using WebUI
 @using WebUI.Layout
+@using NetcodeHub.Packages.Components.Validations.OnInput
+@using NetcodeHub.Packages.Components.Modal
+@using Application.Requests.Accounts
+@using Application.Responses.Credentials
+@using Application.Services
+@using Application.Utilities
+@using Microsoft.AspNetCore.Components.Authorization
+@inject IAccountService accountService
+@inject NavigationManager NavManager
+@inject AuthenticationStateProvider AuthStateProvider

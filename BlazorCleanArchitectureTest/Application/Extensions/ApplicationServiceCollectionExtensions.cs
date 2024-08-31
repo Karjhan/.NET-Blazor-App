@@ -13,7 +13,7 @@ namespace Application.Extensions;
 
 public static class ApplicationServiceCollectionExtensions
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddApplicationAPIServices(this IServiceCollection services, IConfiguration configuration)
     {
         // Add MediatR
         services.AddMediatR(config =>
@@ -27,5 +27,28 @@ public static class ApplicationServiceCollectionExtensions
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         
         return services;
-    }   
+    }  
+    
+    public static IServiceCollection AddApplicationUIServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        // Add services
+        services.AddScoped<IAccountService, AccountService>();
+
+        services.AddAuthorizationCore();
+        services.AddNetcodeHubLocalStorageService();
+
+        services.AddScoped<ILocalStorageAdapter, LocalStorageAdapter>();
+        services.AddScoped<IBackendApiAdapter, BackendApiAdapter>();
+
+        services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+        services.AddTransient<CustomHttpHandler>();
+
+        services.AddCascadingAuthenticationState();
+        services.AddHttpClient(ApplicationConstants.BackendApiClientName, client =>
+        {
+            client.BaseAddress = new Uri(configuration.GetSection("BaseAPIAddress").Value ?? "https://localhost:6443/");
+        }).AddHttpMessageHandler<CustomHttpHandler>();
+        
+        return services;
+    }  
 }

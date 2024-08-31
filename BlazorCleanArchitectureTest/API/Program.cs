@@ -15,8 +15,8 @@ builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Confi
 // Add services to the container.
 builder.Services.AddSwaggerDocumentation();
 builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddApplicationServices(builder.Configuration);
-builder.Services.AddPresentationServices();
+builder.Services.AddApplicationAPIServices(builder.Configuration);
+builder.Services.AddPresentationServices(builder.Configuration);
 
 builder.Services.AddSwaggerDocumentation();
 
@@ -35,7 +35,7 @@ app.UseSerilogRequestLogging();
 
 app.MapApplicationHealthChecks();
 
-app.UseInfrastructureSwagger();
+app.UseSwaggerDocumentation();
 
 app.MapCarter();
 

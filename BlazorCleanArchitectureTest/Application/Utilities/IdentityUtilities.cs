@@ -40,7 +40,7 @@ public static class IdentityUtilities
             var name = token.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Name)!.Value;
             var email = token.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email)!.Value;
             var role = token.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Role)!.Value;
-            var fullname = token.Claims.FirstOrDefault(claim => claim.Type == "Fullname")!.Value;
+            var fullname = token.Claims.FirstOrDefault(claim => claim.Type == "FullName")!.Value;
 
             return new AccountClaims(fullname, name, email, role);
         }

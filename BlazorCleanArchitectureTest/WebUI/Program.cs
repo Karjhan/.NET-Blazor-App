@@ -1,3 +1,4 @@
+using Application.Extensions;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using NetcodeHub.Packages.Components.Toast;
@@ -8,6 +9,7 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddApplicationUIServices(builder.Configuration);
 builder.Services.AddScoped<ToastService>();
 
 await builder.Build().RunAsync();
