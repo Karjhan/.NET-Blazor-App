@@ -2,6 +2,7 @@
 using Application.Adapters;
 using Application.Requests.Accounts;
 using Application.Responses.Accounts;
+using Application.Utilities;
 using Domain.Exceptions;
 using Domain.Primitives;
 using Infrastructure.Constants;
@@ -26,7 +27,7 @@ public class AccountService(
             logger.LogDebug("Sending POST request to {Route}", createAdminRoute);
             var response = await publicClient.PostAsync(createAdminRoute, null, cancellationToken);
             
-            var error = await CheckResponseStatus(response);
+            var error = await CustomHttpHandler.CheckResponseStatus(response);
             if (!string.IsNullOrEmpty(error))
             {
                 logger.LogWarning("Failed to create admin. {Error}", error);
@@ -58,7 +59,7 @@ public class AccountService(
             logger.LogDebug("Sending POST request to {Route} for {UserName}.", createAccountRoute, request.Name);
             var response = await publicClient.PostAsJsonAsync(createAccountRoute, request, cancellationToken);
 
-            var error = await CheckResponseStatus(response);
+            var error = await CustomHttpHandler.CheckResponseStatus(response);
             if (!string.IsNullOrEmpty(error))
             {
                 logger.LogWarning("Failed to create account for {UserName}. {Error}", request.Name, error);
@@ -91,7 +92,7 @@ public class AccountService(
 
             var response = await publicClient.PostAsJsonAsync(loginRoute, request, cancellationToken);
 
-            var error = await CheckResponseStatus(response);
+            var error = await CustomHttpHandler.CheckResponseStatus(response);
             if (!string.IsNullOrEmpty(error))
             {
                 logger.LogWarning("Failed to log in account for {UserName}. {Error}", request.EmailAddress, error);
@@ -122,7 +123,7 @@ public class AccountService(
 
             var response = await publicClient.PostAsJsonAsync(refreshTokenRoute, request, cancellationToken);
         
-            var error = await CheckResponseStatus(response);
+            var error = await CustomHttpHandler.CheckResponseStatus(response);
             if (!string.IsNullOrEmpty(error))
             {
                 logger.LogWarning("Failed to refresh token. {Error}", error);
@@ -153,7 +154,7 @@ public class AccountService(
 
             var response = await privateClient.PostAsJsonAsync(createRoleRoute, request, cancellationToken);
 
-            var error = await CheckResponseStatus(response);
+            var error = await CustomHttpHandler.CheckResponseStatus(response);
             if (!string.IsNullOrEmpty(error))
             {
                 logger.LogWarning("Failed to create new role. {Error}", error);
@@ -186,7 +187,7 @@ public class AccountService(
             
             var response = await privateClient.GetAsync(getRolesRoute, cancellationToken);
     
-            var error = await CheckResponseStatus(response);
+            var error = await CustomHttpHandler.CheckResponseStatus(response);
             if (!string.IsNullOrEmpty(error))
             {
                 logger.LogWarning("Failed to get available roles. {Error}", error);
@@ -225,7 +226,7 @@ public class AccountService(
 
             var response = await privateClient.GetAsync(getAccountsWithRolesRoute, cancellationToken);
 
-            var error = await CheckResponseStatus(response);
+            var error = await CustomHttpHandler.CheckResponseStatus(response);
             if (!string.IsNullOrEmpty(error))
             {
                 logger.LogWarning("Failed to get accounts with roles. {Error}", error);
@@ -256,10 +257,10 @@ public class AccountService(
 
             var response = await publicClient.PostAsJsonAsync(updateRoleRoute, request, cancellationToken);
 
-            var error = await CheckResponseStatus(response);
+            var error = await CustomHttpHandler.CheckResponseStatus(response);
             if (!string.IsNullOrEmpty(error))
             {
-                // logger.LogWarning("Failed to change role for {UserId}. {Error}", request.UserEmail, error);
+                logger.LogWarning("Failed to change role for {UserId}. {Error}", request.UserEmail, error);
                 return Result.Failure(new Error("Error.UpdateRole", error));
             }
 
@@ -276,21 +277,5 @@ public class AccountService(
         }
     }
 
-    private static async Task<string> CheckResponseStatus(HttpResponseMessage response)
-    {
-        try
-        {
-            if (!response.IsSuccessStatusCode)
-            {
-                var responseObject = await response.Content.ReadFromJsonAsync<Error>();
-                return $"Sorry, unknown error occured.\nError Description: {responseObject!.Description}\nStatus Code: {responseObject.Code}";
-            }
-
-            return string.Empty;
-        }
-        catch (Exception e)
-        {
-            return $"Sorry, unknown error occured.\nError Description: {Error.InternalServerError.Description}\nStatus Code: {Error.InternalServerError.Code}";
-        }
-    }
+    
 }

@@ -89,4 +89,9 @@ public class VehicleService(
     {
         throw new NotImplementedException();
     }
+
+    private async Task<HttpClient> GetPrivateClient()
+    {
+        return (await backendApiAdapter.GetPrivateClient()).Value;
+    }
 }

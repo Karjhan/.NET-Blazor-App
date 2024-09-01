@@ -1,9 +1,11 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using Application.Adapters;
 using Application.Requests.Accounts;
 using Application.Responses.Credentials;
 using Application.Services;
+using Domain.Exceptions;
 using Infrastructure.Constants;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
@@ -17,7 +19,7 @@ public class CustomHttpHandler(
     ILogger<CustomHttpHandler> logger
 ) : DelegatingHandler
 {
-    protected async override Task<HttpResponseMessage> SendAsync(
+    protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
@@ -106,5 +108,23 @@ public class CustomHttpHandler(
     {
         logger.LogInformation("Navigating to login page.");
         navigationManager.NavigateTo(navigationManager.BaseUri, true, true);
+    }
+    
+    public static async Task<string> CheckResponseStatus(HttpResponseMessage response)
+    {
+        try
+        {
+            if (!response.IsSuccessStatusCode)
+            {
+                var responseObject = await response.Content.ReadFromJsonAsync<Error>();
+                return $"Sorry, unknown error occured.\nError Description: {responseObject!.Description}\nStatus Code: {responseObject.Code}";
+            }
+
+            return string.Empty;
+        }
+        catch (Exception e)
+        {
+            return $"Sorry, unknown error occured.\nError Description: {Error.InternalServerError.Description}\nStatus Code: {Error.InternalServerError.Code}";
+        }
     }
 }
