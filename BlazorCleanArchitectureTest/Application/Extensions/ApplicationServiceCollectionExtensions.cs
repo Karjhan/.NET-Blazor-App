@@ -33,6 +33,7 @@ public static class ApplicationServiceCollectionExtensions
     {
         // Add services
         services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<IVehicleService, IVehicleService>();
 
         services.AddAuthorizationCore();
         services.AddNetcodeHubLocalStorageService();

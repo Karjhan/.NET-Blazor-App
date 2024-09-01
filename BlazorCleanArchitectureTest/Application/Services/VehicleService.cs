@@ -1,14 +1,19 @@
-﻿using Application.Requests.VehicleBrands;
+﻿using Application.Adapters;
+using Application.Requests.VehicleBrands;
 using Application.Requests.VehicleOwners;
 using Application.Requests.Vehicles;
 using Application.Responses.VehicleBrands;
 using Application.Responses.VehicleOwners;
 using Application.Responses.Vehicles;
 using Domain.Primitives;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Services;
 
-public class VehicleService : IVehicleService
+public class VehicleService(
+    IBackendApiAdapter backendApiAdapter,
+    ILogger<AccountService> logger
+) : IVehicleService
 {
     public Task<Result> CreateVehicleAsync(CreateVehicleRequest request, CancellationToken cancellationToken = default)
     {
