@@ -17,6 +17,12 @@ public sealed record Error(string Code, string Description)
     public static readonly Error AccountCreationError = new("Error.AccountCreationError",
         "Error occured while creating the account, please contact administrator!");
     public static readonly Error InternalServerError = new("Error.Internal", "Internal Server Error");
+    public static readonly Error VehicleAlreadyExists = new("Error.Vehicle", "Vehicle already exists!");
+    public static readonly Error VehicleBrandAlreadyExists = new("Error.VehicleBrand", "Vehicle brand already exists!");
+    public static readonly Error VehicleOwnerAlreadyExists = new("Error.VehicleOwner", "Vehicle owner already exists!");
+    public static readonly Error VehicleNotFound = new("Error.Vehicle", "Vehicle not found!");
+    public static readonly Error VehicleBrandNotFound = new("Error.VehicleBrand", "Vehicle brand not found!");
+    public static readonly Error VehicleOwnerNotFound = new("Error.VehicleOwner", "Vehicle owner not found!");
 
     public static implicit operator Result(Error error)
     {

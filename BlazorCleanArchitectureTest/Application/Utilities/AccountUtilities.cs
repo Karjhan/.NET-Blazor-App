@@ -17,7 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Utilities;
 
-public class AccountUtilities
+public static class AccountUtilities
 {
     public static async Task<string> GenerateToken(ApplicationUser user, UserManager<ApplicationUser> userManager, JWTConfiguration jwtConfiguration)
     {
