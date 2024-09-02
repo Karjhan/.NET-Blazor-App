@@ -38,7 +38,7 @@ public interface IVehicleService
     
     Task<Result> CreateVehicleOwnerAsync(CreateVehicleOwnerRequest request, CancellationToken cancellationToken = default);
 
-    Task<Result<IEnumerable<GetVehicleOwnerResponse>>> GetVehicleOwnerAsync(CancellationToken cancellationToken = default);
+    Task<Result<IEnumerable<GetVehicleOwnerResponse>>> GetVehicleOwnersAsync(CancellationToken cancellationToken = default);
 
     Task<Result<GetVehicleOwnerResponse>> GetVehicleOwnerAsync(Guid id, CancellationToken cancellationToken = default);
 
