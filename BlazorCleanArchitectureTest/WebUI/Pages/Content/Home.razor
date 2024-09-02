@@ -1,10 +1,297 @@
 ﻿@page "/content/home"
 @using Microsoft.AspNetCore.Authorization
+@using Application.Requests.Vehicles
+@using Application.Requests.VehicleBrands
+@using Application.Requests.VehicleOwners
+@using Application.Responses.VehicleBrands
+@using Application.Responses.VehicleOwners
+@using Application.Responses.Vehicles
+@using Domain.Primitives
+@using WebUI.Constants
 @attribute [Authorize(Roles = "ADMIN, USER")]
-<PageTitle>
-    Home
-</PageTitle>
 
-<h1>Hello, world!</h1>
+<PageTitle>Home</PageTitle>
 
-Welcome to your new app!
+<Modal @bind-Open="IsOpen" BootstrapClass="@BorderClass" CustomStyle="min-width: 400px; max-width: 500px;">
+    <ContentContent>
+        <div class="card border-1 shadow-lg p-3">
+            @if (ShowVehicleOwnerModel)
+            {
+                <EditForm Model="CreateVehicleOwnerModel" OnValidSubmit="SaveVehicleOwner">
+                    <DataAnnotationsValidator/>
+                    <FloatingText Label="Owner Name" @bind-Value="CreateVehicleOwnerModel.Name" class="form-control">
+                        
+                    </FloatingText>
+                    <FloatingText Label="Owner Address" @bind-Value="CreateVehicleOwnerModel.Address" class="form-control">
+                                            
+                    </FloatingText>
+                    <div class="form-control mt-3">
+                        <button class="btn btn-primary float-end" type="submit">
+                            Save
+                        </button>
+                    </div>
+                    <div class="input-group mt-3">
+                        <ValidationSummary/>
+                    </div>
+                </EditForm>
+            }
+            @if (ShowVehicleBrandModel)
+            {
+                <EditForm Model="CreateVehicleBrandModel" OnValidSubmit="SaveVehicleBrand">
+                    <DataAnnotationsValidator/>
+                    <FloatingText Label="Brand Name" @bind-Value="CreateVehicleBrandModel.Name" class="form-control">
+                        
+                    </FloatingText>
+                    <FloatingText Label="Brand Location" @bind-Value="CreateVehicleBrandModel.Location" class="form-control">
+                                            
+                    </FloatingText>
+                    <div class="form-control mt-3">
+                        <button class="btn btn-primary float-end" type="submit">
+                            Save
+                        </button>
+                    </div>
+                    <div class="input-group mt-3">
+                        <ValidationSummary/>
+                    </div>
+                </EditForm>
+            }
+            @if (ShowVehicleModel)
+            {
+                <EditForm Model="CreateVehicleModel" OnValidSubmit="SaveVehicle">
+                    <DataAnnotationsValidator/>
+                    <FloatingText Label="Vehicle Name" @bind-Value="CreateVehicleModel.Name" class="form-control">
+                        
+                    </FloatingText>
+                    <label class="form-label mt-2">Vehicle Price</label>
+                    <InputNumber Label="Vehicle Price" @bind-Value="CreateVehicleModel.Price" class="form-control">
+                        
+                    </InputNumber>
+                    <FloatingTextArea Label="Vehicle Description" @bind-Value="CreateVehicleModel.Description" class="form-control">
+                                            
+                    </FloatingTextArea>
+                    <label class="form-label mt-2">
+                        Select Brand
+                    </label>
+                    <select class="form-select" @bind="CreateVehicleModel.VehicleBrandId">
+                        <option>Select Brand</option>
+                        @if (VehicleBrands is not null)
+                        {
+                            @foreach (var brand in VehicleBrands)
+                            {
+                                <option value="@brand.Id">
+                                    @brand.Name
+                                </option>
+                            }
+                        }
+                    </select>
+                    <label class="form-label mt-2">
+                        Select Owner
+                    </label>
+                    <select class="form-select" @bind="CreateVehicleModel.VehicleOwnerId">
+                        <option>Select Owner</option>
+                        @if (VehicleOwners is not null)
+                        {
+                            @foreach (var owner in VehicleOwners)
+                            {
+                                <option value="@owner.Id">
+                                    @owner.Name
+                                </option>
+                            }
+                        }
+                    </select>
+                    <div class="form-control mt-3">
+                        <button class="btn btn-primary float-end" type="submit">
+                            Save
+                        </button>
+                    </div>
+                    <div class="input-group mt-3">
+                        <ValidationSummary/>
+                    </div>
+                </EditForm>
+            }
+        </div>
+    </ContentContent>
+</Modal>
+
+@code
+{
+    private string ModalTile = string.Empty;
+    private string BorderClass = string.Empty;
+    public bool IsOpen { get; set; }
+
+    public int ToastDuration { get; set; } = 2000;
+    Confirmation? confirmation;
+    string? ConfirmationBorder;
+
+    private CreateVehicleRequest CreateVehicleModel { get; set; } = new CreateVehicleRequest();
+    private CreateVehicleBrandRequest CreateVehicleBrandModel { get; set; } = new CreateVehicleBrandRequest();
+    private CreateVehicleOwnerRequest CreateVehicleOwnerModel { get; set; } = new CreateVehicleOwnerRequest();
+
+    private IEnumerable<GetVehicleResponse> Vehicles { get; set; } = [];
+    private IEnumerable<GetVehicleBrandResponse> VehicleBrands { get; set; } = [];
+    private IEnumerable<GetVehicleOwnerResponse> VehicleOwners { get; set; } = [];
+
+    public bool ShowVehicleModel { get; set; } = false;
+    public bool ShowVehicleBrandModel { get; set; } = false;
+    public bool ShowVehicleOwnerModel { get; set; } = false;
+    
+    Result Response = Result.Success();
+    private string IdHolder = string.Empty;
+    public string ModelName = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var vehicles = await vehicleService.GetVehiclesAsync();
+        var vehicleBrands = await vehicleService.GetVehicleBrandsAsync();
+        var vehicleOwners = await vehicleService.GetVehicleOwnersAsync();
+        var isInitializingFailure = vehicles.IsFailure || vehicleBrands.IsFailure || vehicleOwners.IsFailure;
+
+        if (isInitializingFailure)
+        {
+            
+        }
+        else
+        {
+            Vehicles = vehicles.Value;
+            VehicleBrands = vehicleBrands.Value;
+            VehicleOwners = vehicleOwners.Value;
+        }
+    }
+
+    private void AddOwnerClicked()
+    {
+        ModalTile = UIConstants.AddVehicleOwnerTitle;
+        ResetAllShowStates();
+        ResetAllModels();
+        BorderClass = "border-warning rounded p-2 ml-2 mr-2 shadow-lg";
+        ShowVehicleBrandModel = true;
+        OpenModal();
+    }
+    
+    private void AddBrandClicked()
+    {
+        ModalTile = UIConstants.AddVehicleBrandTitle;
+        ResetAllShowStates();
+        ResetAllModels();
+        BorderClass = "border-warning rounded p-2 ml-2 mr-2 shadow-lg";
+        ShowVehicleBrandModel = true;
+        OpenModal();
+    }
+    
+    private void AddVehicleClicked()
+    {
+        ModalTile = UIConstants.AddVehicleTitle;
+        ResetAllShowStates();
+        ResetAllModels();
+        BorderClass = "border-warning rounded p-2 ml-2 mr-2 shadow-lg";
+        ShowVehicleBrandModel = true;
+        OpenModal();
+    }
+
+    private void CreateVehicle()
+    {
+        ShowVehicleModel = true;
+    }
+    
+    private void CreateVehicleBrand()
+    {
+        ShowVehicleBrandModel = true;
+    }
+    
+    private void CreateVehicleOwner()
+    {
+        ShowVehicleOwnerModel = true;
+    }
+
+    private void ResetAllModels()
+    {
+        CreateVehicleModel = new CreateVehicleRequest();
+        CreateVehicleBrandModel = new CreateVehicleBrandRequest();
+        CreateVehicleOwnerModel = new CreateVehicleOwnerRequest();
+    }
+
+    private void ResetAllShowStates()
+    {
+        ShowVehicleModel = false;
+        ShowVehicleBrandModel = false;
+        ShowVehicleOwnerModel = false;
+    }
+
+    private void CancelForm()
+    {
+        IsOpen = false;
+    }
+
+    private void OpenModal()
+    {
+        IsOpen = true;
+    }
+
+    private async Task SaveVehicleBrand()
+    {
+        if (!string.IsNullOrEmpty(IdHolder))
+        {
+            var data = new UpdateVehicleBrandRequest()
+            {
+                Id = Guid.Parse(IdHolder),
+                Name = CreateVehicleBrandModel.Name,
+                Location = CreateVehicleBrandModel.Location
+            };
+            Response = await vehicleService.UpdateVehicleBrandAsync(data);
+        }
+        else
+        {
+            Response = await vehicleService.CreateVehicleBrandAsync(CreateVehicleBrandModel);
+        }
+
+        await DisplayToastMessage(Response);
+    }
+    
+    private async Task SaveVehicleOwner()
+    {
+        if (!string.IsNullOrEmpty(IdHolder))
+        {
+            var data = new UpdateVehicleOwnerRequest()
+            {
+                Id = Guid.Parse(IdHolder),
+                Name = CreateVehicleOwnerModel.Name,
+                Address = CreateVehicleOwnerModel.Address
+            };
+            Response = await vehicleService.UpdateVehicleOwnerAsync(data);
+        }
+        else
+        {
+            Response = await vehicleService.CreateVehicleOwnerAsync(CreateVehicleOwnerModel);
+        }
+
+        await DisplayToastMessage(Response);
+    }
+    
+    private async Task SaveVehicle()
+    {
+        if (!string.IsNullOrEmpty(IdHolder))
+        {
+            var data = new UpdateVehicleRequest()
+            {
+                Id = Guid.Parse(IdHolder),
+                Name = CreateVehicleModel.Name,
+                Description = CreateVehicleModel.Description,
+                Price = CreateVehicleModel.Price,
+                VehicleBrandId = CreateVehicleModel.VehicleBrandId,
+                VehicleOwnerId = CreateVehicleModel.VehicleOwnerId
+            };
+            Response = await vehicleService.UpdateVehicleAsync(data);
+        }
+        else
+        {
+            Response = await vehicleService.CreateVehicleAsync(CreateVehicleModel);
+        }
+
+        await DisplayToastMessage(Response);
+    }
+
+    private async Task DisplayToastMessage(Result response)
+    {
+        
+    }
+}
