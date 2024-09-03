@@ -59,6 +59,7 @@ public class VehiclesModule : CarterModule
             return result.IsSuccess ? Results.Ok() : Results.BadRequest(result.Error);
         }).WithTags("vehicleOwners");
         
+        
         app.MapGet(ApplicationConstants.ApiGetVehiclesSubPath, async (ISender sender) =>
         {
             GetVehiclesQuery query = new GetVehiclesQuery();
@@ -85,6 +86,7 @@ public class VehiclesModule : CarterModule
             
             return result.IsSuccess ? Results.Ok(result.Value) : Results.BadRequest(result.Error);
         }).WithTags("vehicleOwners");
+        
         
         app.MapGet("/get-vehicle/{vehicleId}", async (Guid vehicleId, ISender sender) =>
         {
@@ -113,6 +115,7 @@ public class VehiclesModule : CarterModule
             return result.IsSuccess ? Results.Ok(result.Value) : Results.BadRequest(result.Error);
         }).WithTags("vehicleOwners");
         
+        
         app.MapDelete("/delete-vehicle/{vehicleId}", async (Guid vehicleId, ISender sender) =>
         {
             DeleteVehicleCommand command = new DeleteVehicleCommand(vehicleId);
@@ -139,6 +142,7 @@ public class VehiclesModule : CarterModule
             
             return result.IsSuccess ? Results.Ok() : Results.BadRequest(result.Error);
         }).WithTags("vehicleOwners");
+        
         
         app.MapPut(ApplicationConstants.ApiUpdateVehicleSubPath, async ([FromBody] UpdateVehicleRequest request, ISender sender) =>
         {
