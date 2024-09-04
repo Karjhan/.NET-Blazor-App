@@ -12,6 +12,6 @@ public class VehicleOwnerConfiguration: IEntityTypeConfiguration<VehicleOwner>
 
         builder.HasKey(vehicleOwner => vehicleOwner.Id);
         
-        builder.HasMany(vehicleOwner => vehicleOwner.Vehicles).WithOne(vehicle => vehicle.VehicleOwner).OnDelete(DeleteBehavior.Cascade).HasForeignKey(vehicle => vehicle.VehicleBrandId).IsRequired();
+        builder.HasMany(vehicleOwner => vehicleOwner.Vehicles).WithOne(vehicle => vehicle.VehicleOwner).OnDelete(DeleteBehavior.Cascade).HasForeignKey(vehicle => vehicle.VehicleOwnerId).IsRequired();
     }
 }

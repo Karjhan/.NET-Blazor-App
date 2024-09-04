@@ -57,7 +57,7 @@ public class VehicleService(
         try
         {
             var privateClient = await GetPrivateClient();;
-            const string getVehiclesRoute = ApplicationConstants.ApiAccountBasePath + ApplicationConstants.ApiGetVehiclesSubPath;
+            const string getVehiclesRoute = ApplicationConstants.ApiVehicleBasePath + ApplicationConstants.ApiGetVehiclesSubPath;
             
             logger.LogDebug("Sending GET request to {Route} to get available vehicles.", getVehiclesRoute);
             
@@ -214,7 +214,7 @@ public class VehicleService(
         try
         {
             var privateClient = await GetPrivateClient();;
-            const string getVehicleBrandsRoute = ApplicationConstants.ApiAccountBasePath + ApplicationConstants.ApiGetVehicleBrandsSubPath;
+            const string getVehicleBrandsRoute = ApplicationConstants.ApiVehicleBasePath + ApplicationConstants.ApiGetVehicleBrandsSubPath;
             
             logger.LogDebug("Sending GET request to {Route} to get available vehicle brands.", getVehicleBrandsRoute);
             
@@ -371,7 +371,7 @@ public class VehicleService(
         try
         {
             var privateClient = await GetPrivateClient();;
-            const string getVehicleOwnersRoute = ApplicationConstants.ApiAccountBasePath + ApplicationConstants.ApiGetVehicleOwnersSubPath;
+            const string getVehicleOwnersRoute = ApplicationConstants.ApiVehicleBasePath + ApplicationConstants.ApiGetVehicleOwnersSubPath;
             
             logger.LogDebug("Sending GET request to {Route} to get available vehicle owners.", getVehicleOwnersRoute);
             

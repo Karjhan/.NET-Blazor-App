@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using WebUI.Constants
 
 @code {
     [CascadingParameter]
@@ -11,16 +12,16 @@
             await accountService.CreateAdminAsync();
             if ((await ClientAuthState!).User.Identity!.IsAuthenticated)
             {
-                NavManager.NavigateTo("content/home", false, true);
+                NavManager.NavigateTo(UIConstants.ContentPageRoute, false, true);
             }
             else
             {
-                NavManager.NavigateTo("account/identity/login", false, true);
+                NavManager.NavigateTo(UIConstants.LogoutPageRoute, false, true);
             }
         }
         catch (Exception e)
         {
-            NavManager.NavigateTo("account/identity/login", false, true);
+            NavManager.NavigateTo(UIConstants.LoginPageRoute, false, true);
         }
     }
 }

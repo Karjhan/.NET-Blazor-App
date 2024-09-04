@@ -1,4 +1,4 @@
-﻿@page "/content/home"
+﻿@attribute [Route(UIConstants.ContentPageRoute)]
 @using Microsoft.AspNetCore.Authorization
 @using Application.Requests.Vehicles
 @using Application.Requests.VehicleBrands
@@ -6,12 +6,14 @@
 @using Application.Responses.VehicleBrands
 @using Application.Responses.VehicleOwners
 @using Application.Responses.Vehicles
+@using Domain.Exceptions
 @using Domain.Primitives
 @using Infrastructure.Constants
 @using NetcodeHub.Packages.Components.DataGrid
 @using NetcodeHub.Packages.Components.Toast
 @using WebUI.Constants
 @inject ToastService toastService
+@inject IJSRuntime jsRuntime
 @attribute [Authorize(Roles = "ADMIN, USER")]
 
 <PageTitle>Home</PageTitle>
@@ -39,7 +41,7 @@
                         <HeaderTemplate>
                             <th>@ContentTableConstants.IdColumnTitle</th>
                             <th>@ContentTableConstants.NameColumnTitle</th>
-                            <th>@ContentTableConstants.DescriptionColumnTitle
+                            <th>@ContentTableConstants.DescriptionColumnTitle</th>
                             <th>@ContentTableConstants.PriceColumnTitle</th>
                             <th>@ContentTableConstants.BrandColumnTitle</th>
                             <th>@ContentTableConstants.OwnerColumnTitle</th>
@@ -80,7 +82,7 @@
 <div class="row mt-3">
     <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
         <div class="card border-1 shadow-lg">
-            <div class="card-header fw-bold text-info fs-2">
+            <div class="card-header fw-bold text-success fs-2">
                 Vehicle Brands
                 <button class="btn btn-success float-end" @onclick="AddBrandClicked">
                     + Add Brand
@@ -132,7 +134,7 @@
     </div>
     <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
             <div class="card border-1 shadow-lg">
-                <div class="card-header fw-bold text-info fs-2">
+                <div class="card-header fw-bold text-warning fs-2">
                     Vehicle Owners
                     <button class="btn btn-warning float-end" @onclick="AddOwnerClicked">
                         + Add Owner
@@ -163,7 +165,7 @@
                                         <td>@owner.Name</td>
                                         <td>@owner.Address</td>
                                         <td>
-                                            <small class="text-info cursorStyle" @onclick="() => EditVehicleBrandClicked(owner)">Edit</small>
+                                            <small class="text-info cursorStyle" @onclick="() => EditVehicleOwnerClicked(owner)">Edit</small>
                                             <AuthorizeView Roles="@RoleConstants.Admin">
                                                  <small class="text-danger cursorStyle" @onclick="() => DeleteVehicleOwnerClicked(owner)">Delete</small>
                                             </AuthorizeView>
@@ -205,7 +207,7 @@
                         <FloatingText Label="Owner Address" @bind-Value="CreateVehicleOwnerModel.Address" class="form-control">
                         
                         </FloatingText>
-                        <div class="form-control mt-3">
+                        <div class="py-2 mt-3">
                             <button class="btn btn-primary float-end" type="submit">
                                 Save
                             </button>
@@ -225,7 +227,7 @@
                         <FloatingText Label="Brand Location" @bind-Value="CreateVehicleBrandModel.Location" class="form-control">
                 
                         </FloatingText>
-                        <div class="form-control mt-3">
+                        <div class="py-2 mt-3">
                             <button class="btn btn-primary float-end" type="submit">
                                 Save
                             </button>
@@ -279,7 +281,7 @@
                                 }
                             }
                         </select>
-                        <div class="form-control mt-3">
+                        <div class="py-2 mt-3">
                             <button class="btn btn-primary float-end" type="submit">
                                 Save
                             </button>
@@ -301,7 +303,7 @@
     private string BorderClass = string.Empty;
     public bool IsOpen { get; set; }
 
-    public int ToastDuration { get; set; } = 2000;
+    private int ToastDuration { get; set; } = 2000;
     Confirmation? confirmation;
     string? ConfirmationBorder;
     string Instruction = UIConstants.Instruction;
@@ -347,7 +349,7 @@
         ResetAllShowStates();
         ResetAllModels();
         BorderClass = "border-warning rounded p-2 ml-2 mr-2 shadow-lg";
-        ShowVehicleBrandModel = true;
+        ShowVehicleOwnerModel = true;
         OpenModal();
     }
     
@@ -369,7 +371,7 @@
         ResetAllShowStates();
         ResetAllModels();
         BorderClass = "border-warning rounded p-2 ml-2 mr-2 shadow-lg";
-        ShowVehicleBrandModel = true;
+        ShowVehicleModel = true;
         OpenModal();
     }
 
@@ -419,8 +421,9 @@
             Response = await vehicleService.CreateVehicleBrandAsync(CreateVehicleBrandModel);
         }
 
-        ModelName = ModelNames.Vehicle;
+        ModelName = ModelNames.VehicleBrand;
         await DisplayToastMessage(Response);
+        CancelForm();
     }
     
     private async Task SaveVehicleOwner()
@@ -442,6 +445,7 @@
 
         ModelName = ModelNames.VehicleOwner;
         await DisplayToastMessage(Response);
+        CancelForm();
     }
     
     private async Task SaveVehicle()
@@ -466,6 +470,7 @@
 
         ModelName = ModelNames.Vehicle;
         await DisplayToastMessage(Response);
+        CancelForm();
     }
 
     private void DeleteVehicleClicked(GetVehicleResponse model)
@@ -491,10 +496,53 @@
         ConfirmationBorder = "btn-warning";
         ShowConfirmation();
     }
+    
+    private void EditVehicleClicked(GetVehicleResponse model)
+    {
+        ShowVehicleModel = true;
+        IdHolder = model.Id.ToString();
+        ModelName = ModelNames.Vehicle;
+        IsOpen = true;   
+        ConfirmationBorder = "btn-info";
+    }
+    
+    private void EditVehicleBrandClicked(GetVehicleBrandResponse model)
+    {
+        ShowVehicleBrandModel = true;
+        IdHolder = model.Id.ToString();
+        ModelName = ModelNames.VehicleBrand;
+        IsOpen = true;
+        ConfirmationBorder = "btn-success";
+    }
+    
+    private void EditVehicleOwnerClicked(GetVehicleOwnerResponse model)
+    {
+        ShowVehicleOwnerModel = true;
+        IdHolder = model.Id.ToString();
+        ModelName = ModelNames.VehicleOwner;
+        IsOpen = true;
+        ConfirmationBorder = "btn-warning";
+    }
 
     private async Task ConfirmDelete()
     {
-        
+        if (ModelName.Equals(ModelNames.Vehicle, StringComparison.OrdinalIgnoreCase))
+        {
+            Response = await vehicleService.DeleteVehicleAsync(Guid.Parse(IdHolder));
+        }else if (ModelName.Equals(ModelNames.VehicleBrand, StringComparison.OrdinalIgnoreCase))
+        {
+            Response = await vehicleService.DeleteVehicleBrandAsync(Guid.Parse(IdHolder));
+        }else if (ModelName.Equals(ModelNames.VehicleOwner, StringComparison.OrdinalIgnoreCase))
+        {
+            Response = await vehicleService.DeleteVehicleOwnerAsync(Guid.Parse(IdHolder));
+        }
+        else
+        {
+            Response = Result.Failure(new Error("Error.ModelNames", "Invalid Model Name."));
+        }
+
+        await DisplayToastMessage(Response);
+        await jsRuntime.InvokeVoidAsync("CloseConfirmation");
     }
 
     private async Task DisplayToastMessage(Result response)

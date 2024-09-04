@@ -1,4 +1,5 @@
-﻿@inherits LayoutComponentBase
+﻿@using WebUI.Constants
+@inherits LayoutComponentBase
 <div class="page">
     <div class="sidebar">
         <NavMenu/>
@@ -8,7 +9,7 @@
         <div class="top-row px-4">
             <AuthorizedView>
                 <Authorized>
-                    <a class="btn btn-link text-danger text-decoration-none fw-bold" href="account/identity/logout">Logout</a>
+                    <a class="btn btn-link text-danger text-decoration-none fw-bold" href="@UIConstants.LogoutPageRoute">Logout</a>
                 </Authorized>
             </AuthorizedView>
         </div>

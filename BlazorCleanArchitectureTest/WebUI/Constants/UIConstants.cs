@@ -9,4 +9,10 @@ public static class UIConstants
     public const string AddVehicleOwnerTitle = "Add Vehicle Owner";
     public const string AddVehicleBrandTitle = "Add Vehicle Brand";
     public const string AddVehicleTitle = "Add Vehicle";
+
+    public const string LoginPageRoute = "/account/identity/login";
+    public const string LogoutPageRoute = "/account/identity/logout";
+    public const string UsersPageRoute = "/administration/account/identity/users";
+    public const string RegisterPageRoute = "/administration/account/identity/add-user";
+    public const string ContentPageRoute = "/content/home";
 }
