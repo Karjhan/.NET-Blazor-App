@@ -358,7 +358,7 @@
         ModalTile = UIConstants.AddVehicleBrandTitle;
         ResetAllShowStates();
         ResetAllModels();
-        BorderClass = "border-warning rounded p-2 ml-2 mr-2 shadow-lg";
+        BorderClass = "border-success rounded p-2 ml-2 mr-2 shadow-lg";
         ShowVehicleBrandModel = true;
         OpenModal();
     }
@@ -370,7 +370,7 @@
         ModalTile = UIConstants.AddVehicleTitle;
         ResetAllShowStates();
         ResetAllModels();
-        BorderClass = "border-warning rounded p-2 ml-2 mr-2 shadow-lg";
+        BorderClass = "border-info rounded p-2 ml-2 mr-2 shadow-lg";
         ShowVehicleModel = true;
         OpenModal();
     }
@@ -499,29 +499,56 @@
     
     private void EditVehicleClicked(GetVehicleResponse model)
     {
-        ShowVehicleModel = true;
+        ModalTile = UIConstants.UpdateVehicleTitle;
+        ResetAllShowStates();
+        ResetAllModels();
+        CreateVehicleModel = new CreateVehicleRequest()
+        {
+            Name = model.Name,
+            Description = model.Description,
+            Price = model.Price,
+            VehicleBrandId = model.VehicleBrandId,
+            VehicleOwnerId = model.VehicleOwnerId
+        };
         IdHolder = model.Id.ToString();
-        ModelName = ModelNames.Vehicle;
-        IsOpen = true;   
         ConfirmationBorder = "btn-info";
+        BorderClass = "border-info rounded p-2 ml-2 mr-2 shadow-lg";
+        ShowVehicleModel = true;
+        OpenModal();
     }
     
     private void EditVehicleBrandClicked(GetVehicleBrandResponse model)
     {
-        ShowVehicleBrandModel = true;
+        ModalTile = UIConstants.UpdateVehicleBrandTitle;
+        ResetAllShowStates();
+        ResetAllModels();
+        CreateVehicleBrandModel = new CreateVehicleBrandRequest()
+        {
+            Name = model.Name,
+            Location = model.Location
+        };
         IdHolder = model.Id.ToString();
-        ModelName = ModelNames.VehicleBrand;
-        IsOpen = true;
         ConfirmationBorder = "btn-success";
+        BorderClass = "border-success rounded p-2 ml-2 mr-2 shadow-lg";
+        ShowVehicleBrandModel = true;
+        OpenModal();
     }
     
     private void EditVehicleOwnerClicked(GetVehicleOwnerResponse model)
     {
-        ShowVehicleOwnerModel = true;
+        ModalTile = UIConstants.UpdateVehicleOwnerTitle;
+        ResetAllShowStates();
+        ResetAllModels();
+        CreateVehicleOwnerModel = new CreateVehicleOwnerRequest()
+        {
+            Name = model.Name,
+            Address = model.Address
+        };
         IdHolder = model.Id.ToString();
-        ModelName = ModelNames.VehicleOwner;
-        IsOpen = true;
         ConfirmationBorder = "btn-warning";
+        BorderClass = "border-warning rounded p-2 ml-2 mr-2 shadow-lg";
+        ShowVehicleOwnerModel = true;
+        OpenModal();
     }
 
     private async Task ConfirmDelete()

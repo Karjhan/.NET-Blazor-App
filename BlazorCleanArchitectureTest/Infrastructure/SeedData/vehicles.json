@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "4c425aff-f256-4541-986a-e05925eeca80",
+    "Name": "Toyota Corolla",
+    "Description": "Mild hybrid family sedan!",
+    "Price": 50000,
+    "VehicleOwnerId": "ac4bc218-3ffc-40f6-a75e-b7ddddadcea7",
+    "VehicleBrandId": "9f78b1ca-7f51-4043-ac30-d68ca557360b"
+  },
+  {
+    "Id": "a010da2f-cc51-4497-bb27-d2ede39af164",
+    "Name": "Dacia Duster",
+    "Description": "Best Dacia SUV!",
+    "Price": 20000,
+    "VehicleOwnerId": "22c47d79-e285-4b87-bb81-4e7300587b63",
+    "VehicleBrandId": "e4a77109-ccc6-4bb3-b8a0-3dfc1c3b6a26"
+  }
+]

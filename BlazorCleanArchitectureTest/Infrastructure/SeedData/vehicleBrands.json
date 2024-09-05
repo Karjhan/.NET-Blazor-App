@@ -1,0 +1,20 @@
+[
+  {
+    "Id": "9f78b1ca-7f51-4043-ac30-d68ca557360b",
+    "Name": "Toyota",
+    "Location": "Japan",
+    "Vehicles": []
+  },
+  {
+    "Id": "a92715e1-a42a-4540-b3f1-f2f6457f22df",
+    "Name": "Nissan",
+    "Location": "Japan",
+    "Vehicles": []
+  },
+  {
+    "Id": "e4a77109-ccc6-4bb3-b8a0-3dfc1c3b6a26",
+    "Name": "Dacia",
+    "Location": "Romania",
+    "Vehicles": []
+  }
+]

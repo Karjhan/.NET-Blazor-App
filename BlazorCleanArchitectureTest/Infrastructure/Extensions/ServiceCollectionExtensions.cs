@@ -1,6 +1,9 @@
 ﻿using Domain.Models.Authentication;
+using Infrastructure.Abstractions.Persistence;
 using Infrastructure.Configurations;
 using Infrastructure.DataContexts;
+using Infrastructure.Repositories;
+using Infrastructure.SeedData.Initializer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +22,15 @@ public static class ServiceCollectionExtensions
         services.Configure<EFConfiguration>(configuration.GetSection(nameof(EFConfiguration)).Bind);
 
         var efConfiguration = configuration.GetSection(nameof(EFConfiguration)).Get<EFConfiguration>();
+        
+        // Add generic repository
+        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        
+        // Add Seed Data configuration
+        services.Configure<SeedDataConfiguration>(configuration.GetSection(nameof(SeedDataConfiguration)).Bind);
+        
+        // Add Seed Data initializer
+        services.AddTransient<IDataContextSeed, DataContextSeed>();
         
         // Add entity dbContext for app, add postgres connection for dbContext
         services.AddDbContext<ApplicationContext>(options =>
