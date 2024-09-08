@@ -1,6 +1,9 @@
 ﻿@attribute [Route(UIConstants.LoginPageRoute)]
 @using WebUI.Layout.Accounts.Identity
 @using WebUI.Constants
+@using Application.Adapters
+@inject IConfiguration configuration
+@inject ILocalStorageAdapter localStorageAdapter
 
 @layout AuthenticationLayout
 
@@ -20,13 +23,24 @@
          <a class="btn btn-link text-decoration-none float-end" style="margin-top: -20px" @onclick="ChangePasswordType">
             <small>@DisplayText</small>
          </a>
-         <div class="form-group align-content-end">
-            <button class="float-end btn btn-success mt-4 w-50" type="submit" style="position: absolute; right: 0; margin: 2px;">
+         <div class="form-group align-content-end d-flex justify-content-center w-100">
+            <button class="btn btn-success w-100" type="submit">
                Login
             </button>
          </div>
-         
          <hr class="text-primary"/>
+         <div class="d-flex justify-content-center w-100">
+            @if (ThirdPartyRedirectUrl is not null || ThirdPartyRedirectUrl != "javascript:void(0)")
+            {
+               <a class="btn btn-link text-decoration-none float-end" href="@ThirdPartyRedirectUrl" target="_blank">
+                  <img src="duende-logo.svg" class="icon-banner" alt="duende icon" style="width: 32px;"/> Login with Duende
+               </a>
+            }
+            else
+            {
+                <p>Loading...</p>
+            }
+         </div>
       </div>
       
       <div class="card-footer mt-5">
@@ -58,6 +72,7 @@
    string? BorderClass = "border-success rounded p-2 ml-2 mr-2";
    string? ButtonClass = "btn btn-success";
    private LoginAccountRequest LoginModel { get; set; } = new LoginAccountRequest();
+   private string? ThirdPartyRedirectUrl = null;
 
    private async Task LoginAsync()
    {
@@ -91,6 +106,35 @@
       }
    }
 
+   private async Task<string> BuildThirdPartyRedirect()
+   {
+      var thirdPartyBaseUrl = configuration["DefaultThirdPartyUrl"];
+      var clientIdForThirdParty = configuration["ThirdPartyClientId"];
+      var clientSecretForThirdParty = configuration["ThirdPartyClientSecret"];
+      var redirectBaseUri = configuration["BaseAddress"];
+      var codeVerifier = IdentityUtilities.GenerateCodeVerifier();
+      var codeChallenge = IdentityUtilities.GenerateCodeChallenge(codeVerifier);
+      var scopes = string.Join("%20", ["openid", "profile", "blazorApp"]);
+
+      var failCondition =
+         string.IsNullOrEmpty(thirdPartyBaseUrl) ||
+         string.IsNullOrEmpty(clientIdForThirdParty) ||
+         string.IsNullOrEmpty(clientSecretForThirdParty) ||
+         string.IsNullOrEmpty(redirectBaseUri) ||
+         string.IsNullOrEmpty(codeVerifier) ||
+         string.IsNullOrEmpty(codeChallenge) ||
+         string.IsNullOrEmpty(scopes);
+
+      if (failCondition)
+      {
+         return "javascript:void(0)";
+      }
+
+      await localStorageAdapter.SetCodeVerifierInLocalStorage(codeVerifier);
+      
+      return $"{thirdPartyBaseUrl}connect/authorize?client_id={clientIdForThirdParty}&client_secret={clientSecretForThirdParty}&response_type=code&scope={scopes}&redirect_uri={redirectBaseUri}{UIConstants.ExternalAuthRedirectRoute}&code_challenge={codeChallenge}&code_challenge_method=S256";
+   }
+
    private string? PasswordType = "password";
    private bool PasswordState = true;
    private string DisplayText = "Show";
@@ -116,6 +160,8 @@
    {
       try
       {
+         ThirdPartyRedirectUrl = await BuildThirdPartyRedirect();
+         
          if ((await ClientAuthState!).User.Identity!.IsAuthenticated)
          {
             NavManager.NavigateTo("content/home", false, true);

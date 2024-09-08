@@ -10,4 +10,10 @@ public interface ILocalStorageAdapter
     Task<Result> SetBrowserLocalStorage(LocalStorageDTO localStorageDto);
     
     Task<Result> RemoveTokenFromBrowserLocalStorage();
+
+    Task<Result<string>> GetCodeVerifier();
+    
+    Task<Result> SetCodeVerifierInLocalStorage(string codeVerifier);
+
+    Task<Result> RemoveCodeVerifierFromBrowserLocalStorage();
 }

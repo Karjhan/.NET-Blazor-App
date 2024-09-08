@@ -34,12 +34,14 @@ public static class ApplicationServiceCollectionExtensions
         // Add services
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IVehicleService, VehicleService>();
+        services.AddScoped<IExternalAuthService, ExternalAuthService>();
 
         services.AddAuthorizationCore();
         services.AddNetcodeHubLocalStorageService();
 
         services.AddScoped<ILocalStorageAdapter, LocalStorageAdapter>();
         services.AddScoped<IBackendApiAdapter, BackendApiAdapter>();
+        services.AddScoped<IExternalAuthAdapter, ExternalAuthAdapter>();
 
         services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
         services.AddTransient<CustomHttpHandler>();
@@ -49,6 +51,10 @@ public static class ApplicationServiceCollectionExtensions
         {
             client.BaseAddress = new Uri(configuration.GetSection("BaseAPIAddress").Value ?? "https://localhost:6443/");
         }).AddHttpMessageHandler<CustomHttpHandler>();
+        services.AddHttpClient(ApplicationConstants.ExternalAuthClientName, client =>
+        {
+            client.BaseAddress = new Uri(configuration.GetSection("DefaultThirdPartyUrl").Value ?? "https://localhost:9443/");
+        });
         
         return services;
     }  

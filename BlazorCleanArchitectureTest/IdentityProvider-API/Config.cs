@@ -1,4 +1,5 @@
 ﻿using Duende.IdentityServer.Models;
+using IdentityProvider_API.Infrastructure.Configurations;
 
 namespace IdentityProvider_API;
 
@@ -17,7 +18,7 @@ public static class Config
             new ApiScope("blazorApp", "Blazor Test App Full Access"),
         };
 
-    public static IEnumerable<Client> Clients =>
+    public static IEnumerable<Client> Clients (ExternalAppConfiguration externalApp) =>
         new Client[]
         {
             new Client
@@ -28,6 +29,15 @@ public static class Config
                 RedirectUris = {"https://www.getpostman.com/oauth2/callback"},
                 ClientSecrets = new [] {new Secret("NotASecret".Sha256())},
                 AllowedGrantTypes = {GrantType.ResourceOwnerPassword}
+            },
+            new Client
+            {
+                ClientId = "backendAPI",
+                ClientName = "BackendAPI",
+                AllowedScopes = {"openid", "profile", "blazorApp"},
+                RedirectUris = {$"{externalApp.BaseURL}{externalApp.RedirectPath}"},
+                ClientSecrets = new [] {new Secret("BackendAPISuperSecret".Sha256())},
+                AllowedGrantTypes = {GrantType.AuthorizationCode, GrantType.ResourceOwnerPassword}
             },
         };
 }

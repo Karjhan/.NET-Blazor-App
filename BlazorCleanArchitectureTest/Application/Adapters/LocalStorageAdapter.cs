@@ -19,7 +19,7 @@ public class LocalStorageAdapter(
         
         try
         {
-            var token = await GetBrowserLocalStorage();
+            var token = await GetBrowserLocalStorage(LocalStorageConstants.BrowserStorageKey);
             var isTokenEmpty = string.IsNullOrEmpty(token) || string.IsNullOrWhiteSpace(token);
             if (isTokenEmpty)
             {
@@ -74,10 +74,67 @@ public class LocalStorageAdapter(
         }
     }
     
-    private async Task<string> GetBrowserLocalStorage()
+    public async Task<Result<string>> GetCodeVerifier()
     {
-        logger.LogInformation("Retrieving encrypted item as string from browser local storage.");
-        var result = await localStorageService.GetEncryptedItemAsStringAsync(LocalStorageConstants.BrowserStorageKey);
+        logger.LogInformation("Attempting to retrieve the code verifier from browser local storage.");
+        
+        try
+        {
+            var codeVerifier = await GetBrowserLocalStorage(LocalStorageConstants.CodeVerifierKey);
+            var isCodeVerifierEmpty = string.IsNullOrEmpty(codeVerifier) || string.IsNullOrWhiteSpace(codeVerifier);
+            if (isCodeVerifierEmpty)
+            {
+                logger.LogWarning("Code verifier retrieved is empty or whitespace.");
+                return string.Empty;
+            }
+
+            logger.LogInformation("Code verifier retrieved successfully.");
+            return codeVerifier;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "An error occurred while getting the code verifier.");
+            return string.Empty;
+        }
+    }
+    
+    public async Task<Result> SetCodeVerifierInLocalStorage(string codeVerifier)
+    {
+        logger.LogInformation("Attempting to set code verifier in local storage.");
+        
+        try
+        {
+            await localStorageService.SaveAsEncryptedStringAsync(LocalStorageConstants.CodeVerifierKey, codeVerifier);
+
+            logger.LogInformation("Successfully set code verifier in browser local storage.");
+            return Result.Success();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "An error occurred while setting code verifier in browser local storage.");
+            return Result.Failure(Error.SaveLocalStorageError);
+        }
+    }
+
+    public async Task<Result> RemoveCodeVerifierFromBrowserLocalStorage()
+    {
+        try
+        {
+            await localStorageService.DeleteItemAsync(LocalStorageConstants.CodeVerifierKey);
+            logger.LogInformation("Code verifier successfully removed from browser local storage.");
+            return Result.Success();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "An error occurred while removing the code verifier from browser local storage.");
+            return Result.Failure(Error.DeleteFromLocalStorageError);
+        }
+    }
+    
+    private async Task<string> GetBrowserLocalStorage(string key)
+    {
+        logger.LogInformation("Retrieving encrypted item with key {key} as string from browser local storage.", key);
+        var result = await localStorageService.GetEncryptedItemAsStringAsync(key);
         logger.LogInformation("Retrieved item from browser local storage.");
         return result;
     }

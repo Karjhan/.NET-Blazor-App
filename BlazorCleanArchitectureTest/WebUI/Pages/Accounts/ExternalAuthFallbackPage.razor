@@ -1,0 +1,31 @@
+﻿@using WebUI.Constants
+@attribute [Route(UIConstants.ExternalAuthRedirectRoute)]
+@inject IExternalAuthService ExternalAuthService
+@inject IJSRuntime JSRuntime
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+
+        if (query.TryGetValue("code", out var code))
+        {
+            await ExchangeCodeForToken(code!);
+            NavManager.NavigateTo("content/home", true, true);
+        }
+        else if (query.TryGetValue("error", out var error))
+        {
+            // Handle error code
+        }
+        else
+        {
+            // Handle generic response
+        }
+    }
+    
+    private async Task ExchangeCodeForToken(string code)
+    {
+        await ExternalAuthService.SetAuthTokenAsync(code);
+    }
+}

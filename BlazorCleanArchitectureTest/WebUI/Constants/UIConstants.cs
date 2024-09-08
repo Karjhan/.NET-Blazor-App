@@ -19,4 +19,5 @@ public static class UIConstants
     public const string UsersPageRoute = "/administration/account/identity/users";
     public const string RegisterPageRoute = "/administration/account/identity/add-user";
     public const string ContentPageRoute = "/content/home";
+    public const string ExternalAuthRedirectRoute = "/external-auth/authorization";
 }

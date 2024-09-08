@@ -21,6 +21,9 @@ internal static class HostingExtensions
         builder.Services.Configure<EFConfiguration>(configuration.GetSection(nameof(EFConfiguration)).Bind);
         var efConfiguration = configuration.GetSection(nameof(EFConfiguration)).Get<EFConfiguration>();
         
+        builder.Services.Configure<ExternalAppConfiguration>(configuration.GetSection(nameof(ExternalAppConfiguration)).Bind);
+        var externalAppConfiguration = configuration.GetSection(nameof(ExternalAppConfiguration)).Get<ExternalAppConfiguration>();
+        
         // Add health checks
         builder.Services.AddHealthChecks()
             .AddCheck<ApplicationHealthCheck>("IdentityProvider-API")
@@ -48,7 +51,7 @@ internal static class HostingExtensions
             })
             .AddInMemoryIdentityResources(Config.IdentityResources)
             .AddInMemoryApiScopes(Config.ApiScopes)
-            .AddInMemoryClients(Config.Clients)
+            .AddInMemoryClients(Config.Clients(externalAppConfiguration!))
             .AddAspNetIdentity<ApplicationUser>()
             .AddProfileService<CustomProfileService>();
 
@@ -58,12 +61,37 @@ internal static class HostingExtensions
         });
 
         builder.Services.AddAuthentication();
+        
+        // Add CORS
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("DefaultCorsPolicy", policy =>
+            {
+                var origins = configuration.GetSection("AllowedOrigins").Get<string[]>();
+                if (origins?.Length > 0)
+                {
+                    policy
+                        .WithOrigins(origins)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                }
+                else
+                {
+                    policy
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                }
+            });
+        });
 
         return builder.Build();
     }
 
     public static WebApplication ConfigurePipeline(this WebApplication app)
     {
+        app.UseCors("DefaultCorsPolicy");
+        
         app.MapApplicationHealthChecks();
         
         app.UseSerilogRequestLogging();

@@ -2,6 +2,7 @@
 using Domain.Models.Vehicles;
 using Domain.Primitives;
 using Infrastructure.Abstractions.CQRS;
+using Infrastructure.Abstractions.Persistence;
 using Infrastructure.DataContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -10,6 +11,7 @@ namespace Application.Vehicles.Commands.CreateVehicle;
 
 public class CreateVehicleCommandHandler(
     ApplicationContext context,
+    IGenericRepository<Vehicle> vehicleRepository,
     ILogger<CreateVehicleCommandHandler> logger
 ) : ICommandHandler<CreateVehicleCommand>
 {

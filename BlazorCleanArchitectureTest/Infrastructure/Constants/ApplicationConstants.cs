@@ -22,6 +22,9 @@ public static class ApplicationConstants
     public const string ApiUpdateVehicleSubPath = "/update-vehicle";
     public const string ApiUpdateVehicleBrandSubPath = "/update-vehicle-brand";
     public const string ApiUpdateVehicleOwnerSubPath = "/update-vehicle-owner";
+
+    public const string ApiExternalAuthPath = "api/external-auth";
+    public const string ApiExchangeExternalTokenSubPath = "/exchange-token";
     public static string ApiGetSingleVehicleSubPath(string vehicleId) => $"/get-vehicle/{vehicleId}";
     public static string ApiGetSingleVehicleBrandSubPath(string vehicleBrandId) => $"/get-vehicle-brand/{vehicleBrandId}";
     public static string ApiGetSingleVehicleOwnerSubPath(string vehicleOwnerId) => $"/get-vehicle-owner/{vehicleOwnerId}";
@@ -30,5 +33,8 @@ public static class ApplicationConstants
     public static string ApiDeleteVehicleOwnerSubPath(string vehicleOwnerId) => $"/delete-vehicle-owner/{vehicleOwnerId}";
 
     public const string BackendApiClientName = "WebUIClient";
+    public const string ExternalAuthClientName = "ExternalAuthClient";
     public const string AuthenticationType = "JwtAuth";
+    
+    public const string ExternalAuthRedirectRoute = "/external-auth/authorization";
 }

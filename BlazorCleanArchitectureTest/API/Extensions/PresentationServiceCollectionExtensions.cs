@@ -56,22 +56,22 @@ public static class PresentationServiceCollectionExtensions
                 .AddOpenIdConnect("oidc", options =>
                 {
                     options.Authority = jwtConfiguration.DefaultThirdPartyUrl;
-                    options.ClientId = "your-client-id";
-                    options.ClientSecret = "your-client-secret";
+                    options.ClientId = "backendAPI";
+                    options.ClientSecret = "BackendAPISuperSecret";
                     options.ResponseType = "code";
 
                     options.Scope.Add("openid");
                     options.Scope.Add("profile");
-                    options.Scope.Add("api");
+                    options.Scope.Add("blazorApp");
 
                     options.SaveTokens = true;
 
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
-                        ValidIssuer = "https://your-duende-identity-server",
+                        ValidIssuer = jwtConfiguration.DefaultThirdPartyUrl,
                         ValidateAudience = true,
-                        ValidAudience = "your-audience",
+                        ValidAudience = jwtConfiguration.Audience,
                         ValidateLifetime = true
                     };
                 });

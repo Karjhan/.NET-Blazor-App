@@ -8,6 +8,7 @@ using Domain.Exceptions;
 using Domain.Models.Authentication;
 using Domain.Primitives;
 using Infrastructure.Configurations;
+using Infrastructure.Constants;
 using Infrastructure.DataContexts;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -42,6 +43,55 @@ public static class AccountUtilities
             );
             
             var result = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return result;
+        }
+        catch (Exception e)
+        {
+            return null!;
+        }
+    }
+
+    public static string ExchangeExternalAuthToken(string externalToken, JWTConfiguration jwtConfiguration)
+    {
+        try
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfiguration.Key));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            
+            var existingToken = handler.ReadJwtToken(externalToken);
+            var claims = existingToken.Claims.ToList();
+
+            if (!claims.Any(claim => claim.Type == ClaimTypes.Name))
+            {
+                var nameClaim = claims.FirstOrDefault(c => c.Type == "username")!.Value;
+                claims.Add(new Claim(ClaimTypes.Name, nameClaim));
+            }
+            if (!claims.Any(c => c.Type == ClaimTypes.Email))
+            {
+                var nameClaim = claims.FirstOrDefault(c => c.Type == "username")!.Value;
+                claims.Add(new Claim(ClaimTypes.Email, $"{nameClaim}.email@{nameClaim}.com"));
+            }
+            if (!claims.Any(c => c.Type == ClaimTypes.Role))
+            {
+                claims.Add(new Claim(ClaimTypes.Role, RoleConstants.Admin));
+            }
+            if (!claims.Any(c => c.Type == "FullName"))
+            {
+                var nameClaim = claims.FirstOrDefault(c => c.Type == "name")!.Value;
+                claims.Add(new Claim("FullName", nameClaim));
+            }
+            
+            var token = new JwtSecurityToken(
+                issuer: jwtConfiguration.Issuer,
+                audience: jwtConfiguration.Audience,
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(60),
+                signingCredentials: credentials
+            );
+            
+            var result = handler.WriteToken(token);
 
             return result;
         }
