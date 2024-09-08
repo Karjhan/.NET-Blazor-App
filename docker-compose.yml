@@ -15,10 +15,48 @@ services:
       - Kestrel__Certificates__Default__Password=password
       - Kestrel__Certificates__Default__Path=/app/Certificate/localhost.pfx
       - EnforceHttpsRedirection=true
+      - ExternalAppConfiguration__BaseURL=${FRONTEND_URL}
+      - ExternalAppConfiguration__RedirectPath=${FRONTEND_CODE_REDIRECT}
+      - ExternalAppConfiguration__ClientId=${THIRD_PARTY_CLIENT_ID}
+      - ExternalAppConfiguration__ClientSecret=${THIRD_PARTY_CLIENT_SECRET}
+      - AllowedOrigins__0=${BACKEND_URL}
+      - AllowedOrigins__1=${FRONTEND_URL}
       - DockerizedUrl=
     ports:
       - 9080:9080
       - 9443:9443
+    volumes:
+      - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
+      - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https
+    networks:
+      - backend
+
+  # Backend-API
+  backend-api-svc:
+    image: 'blazor-backend-api:localhost'
+    build: 
+      context: ./BlazorCleanArchitectureTest
+      dockerfile: API/Dockerfile
+    depends_on:
+      - postgres
+      - seq
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - EFConfiguration__ConnectionString=${POSTGRES_CONNECTION_STRING_MAIN}
+      - Serilog__WriteTo__0__Args__serverUrl=${SEQ_SERVER_URL}
+      - Kestrel__Certificates__Default__Password=password
+      - Kestrel__Certificates__Default__Path=/app/Certificate/localhost.pfx
+      - EnforceHttpsRedirection=true
+      - AllowedOrigins__0=${IDENTITY_API_URL}
+      - AllowedOrigins__1=${FRONTEND_URL}
+      - BaseAddress=${BACKEND_URL}/
+      - JWTConfiguration__Key=${JWTCONFIG_KEY}
+      - JWTConfiguration__Issuer=${BACKEND_URL}
+      - JWTConfiguration__Audience=${FRONTEND_URL}
+      - JWTConfiguration__DefaultThirdPartyUrl=${IDENTITY_API_URL}
+    ports:
+      - 6080:6080
+      - 6443:6443
     volumes:
       - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
       - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https

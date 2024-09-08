@@ -20,7 +20,6 @@ public class DataContextSeed(IOptions<SeedDataConfiguration> seedOptions) : IDat
     {
         string mainPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + _options.BaseDirectory;
 
-        List<ApplicationUser> users = new List<ApplicationUser>();
         List<Vehicle> vehicles = new List<Vehicle>();
         List<VehicleBrand> brands = new List<VehicleBrand>();
         List<VehicleOwner> owners = new List<VehicleOwner>();
@@ -205,6 +204,11 @@ public class DataContextSeed(IOptions<SeedDataConfiguration> seedOptions) : IDat
                 throw;
             }
         }
+        
+        // Add data
+        context.VehicleBrands.AddRange(brands);
+        context.VehicleOwners.AddRange(owners);
+        context.Vehicles.AddRange(vehicles);
         
         if (context.ChangeTracker.HasChanges())
         {

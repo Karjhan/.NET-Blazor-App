@@ -32,11 +32,11 @@ public static class Config
             },
             new Client
             {
-                ClientId = "backendAPI",
-                ClientName = "BackendAPI",
+                ClientId = externalApp.ClientId,
+                ClientName = char.ToUpper(externalApp.ClientId[0]) + externalApp.ClientId.Substring(1),
                 AllowedScopes = {"openid", "profile", "blazorApp"},
                 RedirectUris = {$"{externalApp.BaseURL}{externalApp.RedirectPath}"},
-                ClientSecrets = new [] {new Secret("BackendAPISuperSecret".Sha256())},
+                ClientSecrets = new [] {new Secret(externalApp.ClientSecret.Sha256())},
                 AllowedGrantTypes = {GrantType.AuthorizationCode, GrantType.ResourceOwnerPassword}
             },
         };
