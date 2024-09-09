@@ -31,6 +31,30 @@ services:
     networks:
       - backend
 
+  # Frontend
+  frontend-svc:
+    image: 'blazor-frontend:localhost'
+    build: 
+      context: ./BlazorCleanArchitectureTest
+      dockerfile: WebUI/Dockerfile
+    depends_on:
+      - backend-api-svc
+      - postgres
+      - seq
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - EnforceHttpsRedirection=true
+      - BaseAddress=${FRONTEND_URL}
+      - DefaultThirdPartyUrl=${IDENTITY_API_URL}/
+      - ThirdPartyClientId=${THIRD_PARTY_CLIENT_ID}
+      - ThirdPartyClientSecret=${THIRD_PARTY_CLIENT_SECRET}
+      - BaseAPIAddress=${BACKEND_URL}/
+    ports:
+      - 7080:8080
+      - 7443:8443
+    networks:
+      - backend
+
   # Backend-API
   backend-api-svc:
     image: 'blazor-backend-api:localhost'
