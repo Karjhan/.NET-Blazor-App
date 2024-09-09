@@ -22,6 +22,10 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 COPY ./API/Certificate/localhost.pfx /app/publish/Certificate/localhost.pfx
+COPY ./Infrastructure/SeedData/users.json /app/SeedData/users.json
+COPY ./Infrastructure/SeedData/vehicleBrands.json /app/publish/SeedData/vehicleBrands.json
+COPY ./Infrastructure/SeedData/vehicleOwners.json /app/publish/SeedData/vehicleOwners.json
+COPY ./Infrastructure/SeedData/vehicles.json /app/publish/SeedData/vehicles.json
 
 FROM base AS final
 WORKDIR /app

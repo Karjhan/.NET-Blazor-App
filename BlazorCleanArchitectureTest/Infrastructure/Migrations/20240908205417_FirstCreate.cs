@@ -218,8 +218,8 @@ namespace Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Vehicles_VehicleOwners_VehicleBrandId",
-                        column: x => x.VehicleBrandId,
+                        name: "FK_Vehicles_VehicleOwners_VehicleOwnerId",
+                        column: x => x.VehicleOwnerId,
                         principalTable: "VehicleOwners",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -266,6 +266,11 @@ namespace Infrastructure.Migrations
                 name: "IX_Vehicles_VehicleBrandId",
                 table: "Vehicles",
                 column: "VehicleBrandId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vehicles_VehicleOwnerId",
+                table: "Vehicles",
+                column: "VehicleOwnerId");
         }
 
         /// <inheritdoc />

@@ -64,6 +64,7 @@ using (var scope = app.Services.CreateScope())
     catch (Exception e)
     {
         logger.LogError("An error occured during migration, or seed!");
+        logger.LogError(e.Message);
     }
 }
 
