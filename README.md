@@ -41,27 +41,7 @@ as well. The main purpose was to introduce clean architecture and learn more abo
     - Identity-API -> https://localhost:9443
 
 ## Required Information
-By default, the deployed services are set up to run on their specific localhosts:
-- backend will run on port 5001;
-- frontend will run on port 5173;
-- database will run on port 5432;
-
-If you wish to change these settings:
-1. Frontend (all have to be the same):
-    - navigate to vite.config.ts file in the *project_folder/Client* folder and change the port to your desired one;
-    - navigate to the Dockerfile in the *project_folder/Client* folder and change the EXPOSE port and change the port to your desired one;
-    - navigate to docker-compose.yml file in the project folder and change the port in the frontend service change the port to your desired one;
-2. Backend (all have to be the same):
-    - navigate to appsettings.json file in *project_folder/API/API* and change the URL in the Kestrel key to your desired one;
-    -  navigate to the Dockerfile in the *project_folder/API* folder and change the EXPOSE port and change the port to your desired one;
-    - navigate to docker-compose.yml file in the project folder and change the port in the backend service and change the port to your desired one;
-3. Database:
-    - navigate to docker-compose.yml file in the project folder and change the port in the database service and change the port to your desired one;
-    - navigate to docker-compose.yml file in the project folder and change the port in the backend service -> environment -> connection_string and change the port to your desired one;
-
-Additionally, you will have update the connection string for database with your postgreSQL credentials:
-- USERNAME
-- PASSWORD
+There is some data seeded already, for anyone to have startup information. Please check the Infrastructure/SeedData folder.
 
 ## Visuals
 

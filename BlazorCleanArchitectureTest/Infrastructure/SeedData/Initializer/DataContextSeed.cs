@@ -197,6 +197,17 @@ public class DataContextSeed(IOptions<SeedDataConfiguration> seedOptions) : IDat
                     await userManager.CreateAsync(result, userData.Password);
                     await userManager.AddToRoleAsync(result, RoleConstants.User);
                 }
+                
+                // Establish admin
+                ApplicationUser admin = new ApplicationUser()
+                {
+                    Name = AdminConstants.Name,
+                    UserName = AdminConstants.Email,
+                    Email = AdminConstants.Email,
+                    PasswordHash = AdminConstants.Password
+                };
+                await userManager.CreateAsync(admin, AdminConstants.Password);
+                await userManager.AddToRoleAsync(admin, RoleConstants.Admin);
             }
             catch (Exception e)
             {
