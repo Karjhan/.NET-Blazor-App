@@ -1,5 +1,5 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
+USER www-data
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
@@ -24,4 +24,9 @@ COPY ./IdentityProvider-API/Certificate/localhost.pfx /app/publish/Certificate/l
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+USER root
+RUN chown -R www-data:www-data /app/keys
+RUN chmod -R 755 /app/keys
+
+USER www-data
 ENTRYPOINT ["dotnet", "IdentityProvider-API.dll"]
